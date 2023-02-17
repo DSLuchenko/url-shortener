@@ -2,9 +2,9 @@ package com.dsluchenko.app.url_shortener.service;
 
 import com.dsluchenko.app.url_shortener.dto.UrlDto;
 import com.dsluchenko.app.url_shortener.entity.Url;
+import com.dsluchenko.app.url_shortener.mapper.UrlMapper;
 import com.dsluchenko.app.url_shortener.repository.UrlRepository;
 import com.dsluchenko.app.url_shortener.service.exeption.TargetUrlBlankException;
-import com.dsluchenko.app.url_shortener.util.MapperUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -14,12 +14,11 @@ import java.util.UUID;
 public class UrlServiceImpl implements UrlService {
 
     private final UrlRepository urlRepository;
-    private final MapperUtil mapperUtil;
+    private final UrlMapper mapper;
 
-    public UrlServiceImpl(UrlRepository urlRepository, MapperUtil mapperUtil) {
-
+    public UrlServiceImpl(UrlRepository urlRepository, UrlMapper mapper) {
         this.urlRepository = urlRepository;
-        this.mapperUtil = mapperUtil;
+        this.mapper = mapper;
     }
 
     @Override
@@ -35,7 +34,7 @@ public class UrlServiceImpl implements UrlService {
 
         var sameTargetUrl = urlRepository.findByTargetUrl(targetUrl).orElse(null);
         if (sameTargetUrl != null) {
-            return mapperUtil.mapToUrlDto(sameTargetUrl);
+            return mapper.urlToUrlDto(sameTargetUrl);
         }
 
         var url = new Url(
@@ -45,13 +44,13 @@ public class UrlServiceImpl implements UrlService {
                 null);
         urlRepository.save(url);
 
-        return mapperUtil.mapToUrlDto(url);
+        return mapper.urlToUrlDto(url);
     }
 
     @Override
     public UrlDto getByShortName(String shortName) {
         var url = urlRepository.findByShortName(shortName).orElseThrow();
 
-        return mapperUtil.mapToUrlDto(url);
+        return mapper.urlToUrlDto(url);
     }
 }
