@@ -16,6 +16,10 @@ public class UrlDto {
         return targetUrl;
     }
 
+    public void setTargetUrl(String targetUrl) {
+        this.targetUrl = targetUrl;
+    }
+
     public String getUri() {
         return uri;
     }
