@@ -1,7 +1,7 @@
 package com.dsluchenko.app.url_shortener.controller;
 
-
 import com.dsluchenko.app.url_shortener.dto.UrlDto;
+import com.dsluchenko.app.url_shortener.exeption.TargetUrlBlankException;
 import com.dsluchenko.app.url_shortener.service.UrlService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,11 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+
 import java.net.URI;
 
 @RestController
 public class UrlController {
-
     private final UrlService urlService;
 
     public UrlController(UrlService urlService) {
@@ -29,7 +30,7 @@ public class UrlController {
     }
 
     @PostMapping(value = "/")
-    public ResponseEntity<UrlDto> reduceTargetUrl(@RequestBody UrlDto data, HttpServletRequest request) {
+    public ResponseEntity<UrlDto> reduceTargetUrl(@RequestBody @Valid UrlDto data, HttpServletRequest request) throws TargetUrlBlankException {
         var urlDto = urlService.reduceTargetUrl(data.getTargetUrl());
         var uri = request.getRequestURL() + urlDto.getUri();
         urlDto.setUri(uri);

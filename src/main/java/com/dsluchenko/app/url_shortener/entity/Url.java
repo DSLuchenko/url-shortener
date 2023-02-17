@@ -1,25 +1,28 @@
 package com.dsluchenko.app.url_shortener.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
+@Table(name = "urls_dbt",
+        indexes = {
+                @Index(name = "urls_targetUrl_idx", columnList = "targetUrl"),
+                @Index(name = "urls_shortName_idx", columnList = "shortName")
+        })
+
 public class Url {
 
     @Id
-    @GeneratedValue
-    UUID id;
-
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    Long id;
+    @Column(nullable = false)
     String targetUrl;
-
+    @Column(length = 7, nullable = false)
     String shortName;
-
+    @Column(nullable = false)
     Date createdAt;
-
+    @Column(nullable = true)
     Date updatedAt;
 
     public Url() {
@@ -32,7 +35,7 @@ public class Url {
         this.updatedAt = updatedAt;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
@@ -52,7 +55,7 @@ public class Url {
         return updatedAt;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -4,7 +4,7 @@ import com.dsluchenko.app.url_shortener.dto.UrlDto;
 import com.dsluchenko.app.url_shortener.entity.Url;
 import com.dsluchenko.app.url_shortener.mapper.UrlMapper;
 import com.dsluchenko.app.url_shortener.repository.UrlRepository;
-import com.dsluchenko.app.url_shortener.service.exeption.TargetUrlBlankException;
+import com.dsluchenko.app.url_shortener.exeption.TargetUrlBlankException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,14 +23,7 @@ public class UrlServiceImpl implements UrlService {
 
     @Override
     public UrlDto reduceTargetUrl(String targetUrl) throws TargetUrlBlankException {
-        if (targetUrl.isBlank()) {
-            throw new TargetUrlBlankException();
-        }
-        targetUrl = targetUrl.trim();
-
-        if (targetUrl.endsWith("/")) {
-            targetUrl = targetUrl.substring(0, targetUrl.length() - 1);
-        }
+        targetUrl = prepareUrl(targetUrl);
 
         var sameTargetUrl = urlRepository.findByTargetUrl(targetUrl).orElse(null);
         if (sameTargetUrl != null) {
@@ -52,5 +45,17 @@ public class UrlServiceImpl implements UrlService {
         var url = urlRepository.findByShortName(shortName).orElseThrow();
 
         return mapper.urlToUrlDto(url);
+    }
+
+    private String prepareUrl(String url) throws TargetUrlBlankException {
+        if (url.isBlank()) {
+            throw new TargetUrlBlankException();
+        }
+        url = url.trim();
+
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+        return url;
     }
 }

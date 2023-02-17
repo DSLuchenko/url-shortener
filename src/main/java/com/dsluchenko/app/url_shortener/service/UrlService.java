@@ -1,7 +1,7 @@
 package com.dsluchenko.app.url_shortener.service;
 
 import com.dsluchenko.app.url_shortener.dto.UrlDto;
-import com.dsluchenko.app.url_shortener.service.exeption.TargetUrlBlankException;
+import com.dsluchenko.app.url_shortener.exeption.TargetUrlBlankException;
 
 public interface UrlService {
     UrlDto reduceTargetUrl(String targetUrl) throws TargetUrlBlankException;

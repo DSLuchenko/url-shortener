@@ -1,6 +1,11 @@
 package com.dsluchenko.app.url_shortener.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.URL;
+
 public class UrlDto {
+    @NotBlank
+    @URL
     String targetUrl;
     String uri;
 
