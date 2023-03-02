@@ -6,11 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "urls_dbt",
-        indexes = {
-                @Index(name = "urls_targetUrl_idx", columnList = "targetUrl"),
-                @Index(name = "urls_shortName_idx", columnList = "shortName")
-        })
+@Table(name = "urls_dbt", indexes = {@Index(name = "urls_targetUrl_idx", columnList = "targetUrl"),
+                                    @Index(name = "urls_shortName_idx", columnList = "shortName")})
 
 public class Url {
     @Id
@@ -24,8 +21,10 @@ public class Url {
     private Date createdAt;
     @Column(nullable = true)
     private Date updatedAt;
-    @ManyToMany(mappedBy = "urls", fetch = FetchType.LAZY)
-    private List<User> users;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Url() {
     }
@@ -35,7 +34,7 @@ public class Url {
         this.shortName = shortName;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        
+
     }
 
     public Long getId() {
@@ -76,5 +75,13 @@ public class Url {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

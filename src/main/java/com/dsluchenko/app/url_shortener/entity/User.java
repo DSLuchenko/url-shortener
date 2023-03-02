@@ -18,11 +18,7 @@ public class User {
     private String login;
     @Column(nullable = false)
     private String password;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_urls_dbt",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "url_id", referencedColumnName = "id")
-    )
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Url> urls;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles_dbt",
