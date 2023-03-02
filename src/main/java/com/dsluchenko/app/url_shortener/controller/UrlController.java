@@ -1,7 +1,6 @@
 package com.dsluchenko.app.url_shortener.controller;
 
 import com.dsluchenko.app.url_shortener.dto.UrlDto;
-import com.dsluchenko.app.url_shortener.exeption.TargetUrlBlankException;
 import com.dsluchenko.app.url_shortener.service.UrlService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +12,8 @@ import jakarta.validation.Valid;
 
 import java.net.URI;
 
-@RestController
+
+@RestController("api/auth")
 public class UrlController {
     private final UrlService urlService;
 
@@ -30,10 +30,11 @@ public class UrlController {
     }
 
     @PostMapping(value = "/")
-    public ResponseEntity<UrlDto> reduceTargetUrl(@RequestBody @Valid UrlDto data, HttpServletRequest request) throws TargetUrlBlankException {
+    public ResponseEntity<UrlDto> reduceTargetUrl(@RequestBody @Valid UrlDto data, HttpServletRequest request){
         var urlDto = urlService.reduceTargetUrl(data.getTargetUrl());
         var uri = request.getRequestURL() + urlDto.getUri();
         urlDto.setUri(uri);
         return ResponseEntity.status(HttpStatus.CREATED).body(urlDto);
     }
+
 }

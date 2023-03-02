@@ -3,6 +3,7 @@ package com.dsluchenko.app.url_shortener.entity;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "urls_dbt",
@@ -12,18 +13,19 @@ import java.util.Date;
         })
 
 public class Url {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    Long id;
+    private Long id;
     @Column(nullable = false)
-    String targetUrl;
-    @Column(length = 7, nullable = false)
-    String shortName;
+    private String targetUrl;
     @Column(nullable = false)
-    Date createdAt;
+    private String shortName;
+    @Column(nullable = false)
+    private Date createdAt;
     @Column(nullable = true)
-    Date updatedAt;
+    private Date updatedAt;
+    @ManyToMany(mappedBy = "urls", fetch = FetchType.LAZY)
+    private List<User> users;
 
     public Url() {
     }
@@ -33,6 +35,7 @@ public class Url {
         this.shortName = shortName;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        
     }
 
     public Long getId() {

@@ -1,0 +1,110 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet id="1.0.0" author="dmitry.luchenko">
+        <createSequence sequenceName="urls_id_seq" cacheSize="50"
+                        cycle="false"
+                        dataType="BIGINT"
+                        incrementBy="50"
+                        minValue="1"
+                        startValue="1"/>
+        <createSequence sequenceName="users_id_seq" cacheSize="50"
+                        cycle="false"
+                        dataType="BIGINT"
+                        incrementBy="50"
+                        minValue="1"
+                        startValue="1"/>
+        <createSequence sequenceName="roles_id_seq" cacheSize="50"
+                        cycle="false"
+                        dataType="BIGINT"
+                        incrementBy="50"
+                        minValue="1"
+                        startValue="1"/>
+    </changeSet>
+    <changeSet id="1.0.1" author="dmitry.luchenko">
+        <createTable tableName="urls_dbt">
+            <column name="id" type="BIGINT" valueSequenceNext="urls_id_seq">
+                <constraints primaryKey="true" primaryKeyName="urls_id_pk" nullable="false"/>
+            </column>
+            <column name="target_url" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="short_name" type="VARCHAR(7)">
+                <constraints uniqueConstraintName="urls_shortname_unq" nullable="false" unique="true"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1.0.2" author="dmitry.luchenko">
+        <createTable tableName="users_dbt">
+            <column name="id" type="BIGINT" valueSequenceNext="users_id_seq">
+                <constraints primaryKey="true" primaryKeyName="users_id_pk" nullable="false"/>
+            </column>
+            <column name="login" type="VARCHAR(255)">
+                <constraints uniqueConstraintName="users_login_unq" nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1.0.3" author="dmitry.luchenko">
+        <createTable tableName="roles_dbt">
+            <column name="id" type="BIGINT" valueSequenceNext="roles_id_seq">
+                <constraints primaryKey="true" primaryKeyName="roles_id_pk" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1.0.4" author="dmitry.luchenko">
+        <createTable tableName="user_roles_dbt">
+            <column name="user_id" type="BIGINT">
+            </column>
+            <column name="role_id" type="BIGINT">
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1.0.5" author="dmitry.luchenko">
+        <createTable tableName="user_urls_dbt">
+            <column name="user_id" type="BIGINT">
+            </column>
+            <column name="url_id" type="BIGINT">
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.6" author="dmitry.luchenko" >
+        <addForeignKeyConstraint baseTableName="user_roles_dbt" baseColumnNames="user_id"
+                                 constraintName="user_roles_users_id_fk" referencedTableName="users_dbt"
+                                 referencedColumnNames="id" onDelete="CASCADE" onUpdate="RESTRICT"/>
+    </changeSet>
+    <changeSet id="1.0.7" author="dmitry.luchenko" >
+        <addForeignKeyConstraint baseTableName="user_roles_dbt" baseColumnNames="role_id"
+                                 constraintName="user_roles_roles_id_fk" referencedTableName="roles_dbt"
+                                 referencedColumnNames="id" onDelete="CASCADE" onUpdate="RESTRICT"/>
+    </changeSet>
+    <changeSet id="1.0.8" author="dmitry.luchenko" >
+        <createIndex tableName="urls_dbt" indexName="urls_targetUrl_idx">
+            <column name="target_url"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1.0.9" author="dmitry.luchenko">
+        <createIndex tableName="urls_dbt" indexName="urls_shortName_idx">
+            <column name="short_name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="1.0.10" author="dmitry.luchenko">
+        <createIndex tableName="users_dbt" indexName="users_login_idx">
+            <column name="login"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

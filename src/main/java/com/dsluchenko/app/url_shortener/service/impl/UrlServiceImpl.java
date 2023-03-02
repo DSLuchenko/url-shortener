@@ -1,10 +1,12 @@
-package com.dsluchenko.app.url_shortener.service;
+package com.dsluchenko.app.url_shortener.service.impl;
 
 import com.dsluchenko.app.url_shortener.dto.UrlDto;
 import com.dsluchenko.app.url_shortener.entity.Url;
+import com.dsluchenko.app.url_shortener.exeption.UrlNotFoundRuntimeException;
 import com.dsluchenko.app.url_shortener.mapper.UrlMapper;
 import com.dsluchenko.app.url_shortener.repository.UrlRepository;
-import com.dsluchenko.app.url_shortener.exeption.TargetUrlBlankException;
+import com.dsluchenko.app.url_shortener.exeption.TargetUrlBlankRuntimeException;
+import com.dsluchenko.app.url_shortener.service.UrlService;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,7 +24,7 @@ public class UrlServiceImpl implements UrlService {
     }
 
     @Override
-    public UrlDto reduceTargetUrl(String targetUrl) throws TargetUrlBlankException {
+    public UrlDto reduceTargetUrl(String targetUrl) throws TargetUrlBlankRuntimeException {
         targetUrl = prepareUrl(targetUrl);
 
         var sameTargetUrl = urlRepository.findByTargetUrl(targetUrl).orElse(null);
@@ -42,14 +44,14 @@ public class UrlServiceImpl implements UrlService {
 
     @Override
     public UrlDto getByShortName(String shortName) {
-        var url = urlRepository.findByShortName(shortName).orElseThrow();
+        var url = urlRepository.findByShortName(shortName).orElseThrow(() -> new UrlNotFoundRuntimeException(shortName));
 
         return mapper.urlToUrlDto(url);
     }
 
-    private String prepareUrl(String url) throws TargetUrlBlankException {
+    private String prepareUrl(String url) {
         if (url.isBlank()) {
-            throw new TargetUrlBlankException();
+            throw new TargetUrlBlankRuntimeException();
         }
         url = url.trim();
 

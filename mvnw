@@ -36,12 +36,12 @@
 
 if [ -z "$MAVEN_SKIP_RC" ] ; then
 
-  if [ -f /usr/local/etc/mavenrc ] ; then
-    . /usr/local/etc/mavenrc
+  if [ -f /usr/local/et</mavenrc ] ; then
+    . /usr/local/et</mavenrc
   fi
 
-  if [ -f /etc/mavenrc ] ; then
-    . /etc/mavenrc
+  if [ -f /et</mavenrc ] ; then
+    . /et</mavenrc
   fi
 
   if [ -f "$HOME/.mavenrc" ] ; then
@@ -58,11 +58,11 @@ case "`uname`" in
   CYGWIN*) cygwin=true ;;
   MINGW*) mingw=true;;
   Darwin*) darwin=true
-    # Use /usr/libexec/java_home if available, otherwise fall back to /Library/Java/Home
-    # See https://developer.apple.com/library/mac/qa/qa1170/_index.html
+    # Use /usr/libexe</java_home if available, otherwise fall back to /Library/Java/Home
+    # See https://developer.apple.com/library/ma</qa/qa1170/_index.html
     if [ -z "$JAVA_HOME" ]; then
-      if [ -x "/usr/libexec/java_home" ]; then
-        export JAVA_HOME="`/usr/libexec/java_home`"
+      if [ -x "/usr/libexe</java_home" ]; then
+        export JAVA_HOME="`/usr/libexe</java_home`"
       else
         export JAVA_HOME="/Library/Java/Home"
       fi
@@ -71,7 +71,7 @@ case "`uname`" in
 esac
 
 if [ -z "$JAVA_HOME" ] ; then
-  if [ -r /etc/gentoo-release ] ; then
+  if [ -r /et</gentoo-release ] ; then
     JAVA_HOME=`java-config --jre-home`
   fi
 fi

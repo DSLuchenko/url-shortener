@@ -1,8 +1,12 @@
 package com.dsluchenko.app.url_shortener.advice;
 
-import com.dsluchenko.app.url_shortener.exeption.TargetUrlBlankException;
+import com.dsluchenko.app.url_shortener.exeption.TargetUrlBlankRuntimeException;
+import com.dsluchenko.app.url_shortener.exeption.UrlNotFoundRuntimeException;
+import com.dsluchenko.app.url_shortener.exeption.authenticationException.UserAlreadyExistAuthenticationException;
+import com.dsluchenko.app.url_shortener.exeption.authenticationException.UserNotFoundAuthenticationException;
 import org.springframework.http.HttpStatus;
 
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,9 +21,8 @@ import java.util.NoSuchElementException;
 public class AppExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(value = NoSuchElementException.class)
-    public Map<String, String> handleNotFound(NoSuchElementException ex) {
-
+    @ExceptionHandler(value = {NoSuchElementException.class, UrlNotFoundRuntimeException.class})
+    public Map<String, String> handleNotFound(RuntimeException ex) {
         //log
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put(ex.getClass().toString(), ex.getMessage());
@@ -27,9 +30,17 @@ public class AppExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = TargetUrlBlankException.class)
-    public Map<String, String> TargetUrlBlankException(TargetUrlBlankException ex) {
+    @ExceptionHandler(value = TargetUrlBlankRuntimeException.class)
+    public Map<String, String> handleBadRequest(TargetUrlBlankRuntimeException ex) {
         //log
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put(ex.getClass().toString(), ex.getMessage());
+        return errorMap;
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler({UserAlreadyExistAuthenticationException.class, UserNotFoundAuthenticationException.class})
+    public Map<String, String> handleConflict(AuthenticationException ex) {
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put(ex.getClass().toString(), ex.getMessage());
         return errorMap;
@@ -44,5 +55,4 @@ public class AppExceptionHandler {
         });
         return errorMap;
     }
-
 }

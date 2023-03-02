@@ -3,6 +3,7 @@ package com.dsluchenko.app.url_shortener.mapper;
 import com.dsluchenko.app.url_shortener.dto.UrlDto;
 import com.dsluchenko.app.url_shortener.entity.Url;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -14,7 +15,7 @@ public class UrlMapperTest {
 
     @Test
     public void shouldMapUrlToUrlDto() {
-        UrlMapper mapper = new UrlMapperImpl();
+        UrlMapper mapper = Mappers.getMapper(UrlMapper.class);
 
         //given
         Url url = new Url("targetUrl", "shortName", new Date(), new Date());
