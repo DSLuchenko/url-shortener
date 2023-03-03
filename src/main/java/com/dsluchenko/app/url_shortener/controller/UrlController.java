@@ -13,7 +13,8 @@ import jakarta.validation.Valid;
 import java.net.URI;
 
 
-@RestController("api/auth")
+@RestController
+@RequestMapping(value = "/api/url")
 public class UrlController {
     private final UrlService urlService;
 
@@ -29,12 +30,13 @@ public class UrlController {
                 .build();
     }
 
-    @PostMapping(value = "/")
-    public ResponseEntity<UrlDto> reduceTargetUrl(@RequestBody @Valid UrlDto data, HttpServletRequest request){
-        var urlDto = urlService.reduceTargetUrl(data.getTargetUrl());
-        var uri = request.getRequestURL() + urlDto.getUri();
-        urlDto.setUri(uri);
+    @PostMapping(value = "/reduceUrl")
+    public ResponseEntity<UrlDto> reduceTargetUrl(@RequestBody @Valid UrlDto urlDto, HttpServletRequest request) {
+        urlDto = urlService.reduceTargetUrl(urlDto);
+        var indexUri = request.getRequestURL().indexOf(request.getRequestURI());
+        var urlWithOutUri = request.getRequestURL().substring(0, indexUri);
+        var newUrl = String.join("/", urlWithOutUri, urlDto.getUri());
+        urlDto.setUri(newUrl);
         return ResponseEntity.status(HttpStatus.CREATED).body(urlDto);
     }
-
 }

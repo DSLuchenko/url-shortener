@@ -7,11 +7,12 @@ import java.util.List;
 
 @Entity
 @Table(name = "urls_dbt", indexes = {@Index(name = "urls_targetUrl_idx", columnList = "targetUrl"),
-                                    @Index(name = "urls_shortName_idx", columnList = "shortName")})
+        @Index(name = "urls_shortName_idx", columnList = "shortName")})
 
 public class Url {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "urls_id_seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "urls_id_seq", sequenceName = "urls_id_seq", allocationSize = 1)
     private Long id;
     @Column(nullable = false)
     private String targetUrl;

@@ -14,7 +14,7 @@ public class UserMapperTest {
         UserMapper mapper = Mappers.getMapper(UserMapper.class);
 
         //given
-        UserDto userDto = new UserDto("login", "password");
+        UserDto userDto = new UserDto(1L,"login", "password");
 
         //when
         User user = mapper.userFromUserDto(userDto);

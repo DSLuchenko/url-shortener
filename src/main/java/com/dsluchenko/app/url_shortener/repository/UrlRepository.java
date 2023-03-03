@@ -8,5 +8,8 @@ import java.util.UUID;
 
 public interface UrlRepository extends JpaRepository<Url, UUID> {
     Optional<Url> findByShortName(String shortName);
+
+    Optional<Url> findByTargetUrlAndUserId(String targetUrl, Long userId);
+
     Optional<Url> findByTargetUrl(String targetUrl);
 }

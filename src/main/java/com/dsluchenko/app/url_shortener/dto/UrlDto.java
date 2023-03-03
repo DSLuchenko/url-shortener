@@ -6,15 +6,19 @@ import org.hibernate.validator.constraints.URL;
 public class UrlDto {
     @NotBlank
     @URL
-    String targetUrl;
-    String uri;
+    private String targetUrl;
+    private String uri;
+    private Long userId = 1L;//unauthorized_user
 
     public UrlDto() {
     }
 
-    public UrlDto(String targetUrl, String shortName) {
+    public UrlDto(String targetUrl, String shortName, Long userId) {
         this.targetUrl = targetUrl;
         this.uri = shortName;
+        if (userId != null) {
+            this.userId = userId;
+        }
     }
 
     public String getTargetUrl() {
@@ -32,4 +36,13 @@ public class UrlDto {
     public void setUri(String uri) {
         this.uri = uri;
     }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 }
+
