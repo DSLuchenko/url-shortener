@@ -8,7 +8,8 @@ import java.util.List;
 @Table(name = "roles_dbt")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "roles_id_seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "roles_id_seq", sequenceName = "roles_id_seq", allocationSize = 1)
     private Long id;
     @Column
     private String name;

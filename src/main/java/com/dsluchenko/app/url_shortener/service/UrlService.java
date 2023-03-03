@@ -4,7 +4,8 @@ import com.dsluchenko.app.url_shortener.dto.UrlDto;
 import com.dsluchenko.app.url_shortener.exeption.TargetUrlBlankRuntimeException;
 
 public interface UrlService {
-    UrlDto reduceTargetUrl(String targetUrl) throws TargetUrlBlankRuntimeException;
+    UrlDto reduceTargetUrl(UrlDto urlDto);
 
     UrlDto getByShortName(String shortName);
+
 }

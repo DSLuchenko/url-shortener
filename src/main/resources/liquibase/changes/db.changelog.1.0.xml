@@ -7,23 +7,36 @@
         <createSequence sequenceName="urls_id_seq" cacheSize="50"
                         cycle="false"
                         dataType="BIGINT"
-                        incrementBy="50"
+                        incrementBy="1"
                         minValue="1"
                         startValue="1"/>
         <createSequence sequenceName="users_id_seq" cacheSize="50"
                         cycle="false"
                         dataType="BIGINT"
-                        incrementBy="50"
+                        incrementBy="1"
                         minValue="1"
                         startValue="1"/>
         <createSequence sequenceName="roles_id_seq" cacheSize="50"
                         cycle="false"
                         dataType="BIGINT"
-                        incrementBy="50"
+                        incrementBy="1"
                         minValue="1"
                         startValue="1"/>
     </changeSet>
     <changeSet id="1.0.1" author="dmitry.luchenko">
+        <createTable tableName="users_dbt">
+            <column name="id" type="BIGINT" valueSequenceNext="users_id_seq">
+                <constraints primaryKey="true" primaryKeyName="users_id_pk" nullable="false"/>
+            </column>
+            <column name="login" type="VARCHAR(255)">
+                <constraints uniqueConstraintName="users_login_unq" nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1.0.2" author="dmitry.luchenko">
         <createTable tableName="urls_dbt">
             <column name="id" type="BIGINT" valueSequenceNext="urls_id_seq">
                 <constraints primaryKey="true" primaryKeyName="urls_id_pk" nullable="false"/>
@@ -40,18 +53,8 @@
             <column name="updated_at" type="TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
-        </createTable>
-    </changeSet>
-    <changeSet id="1.0.2" author="dmitry.luchenko">
-        <createTable tableName="users_dbt">
-            <column name="id" type="BIGINT" valueSequenceNext="users_id_seq">
-                <constraints primaryKey="true" primaryKeyName="users_id_pk" nullable="false"/>
-            </column>
-            <column name="login" type="VARCHAR(255)">
-                <constraints uniqueConstraintName="users_login_unq" nullable="false" unique="true"/>
-            </column>
-            <column name="password" type="VARCHAR(255)">
-                <constraints nullable="false"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="urls_users_id_fk" referencedTableName="users_dbt" referencedColumnNames="id"/>
             </column>
         </createTable>
     </changeSet>
@@ -73,36 +76,27 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="1.0.5" author="dmitry.luchenko">
-        <createTable tableName="user_urls_dbt">
-            <column name="user_id" type="BIGINT">
-            </column>
-            <column name="url_id" type="BIGINT">
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="1.0.6" author="dmitry.luchenko" >
+    <changeSet id="1.0.5" author="dmitry.luchenko" >
         <addForeignKeyConstraint baseTableName="user_roles_dbt" baseColumnNames="user_id"
                                  constraintName="user_roles_users_id_fk" referencedTableName="users_dbt"
                                  referencedColumnNames="id" onDelete="CASCADE" onUpdate="RESTRICT"/>
     </changeSet>
-    <changeSet id="1.0.7" author="dmitry.luchenko" >
+    <changeSet id="1.0.6" author="dmitry.luchenko" >
         <addForeignKeyConstraint baseTableName="user_roles_dbt" baseColumnNames="role_id"
                                  constraintName="user_roles_roles_id_fk" referencedTableName="roles_dbt"
                                  referencedColumnNames="id" onDelete="CASCADE" onUpdate="RESTRICT"/>
     </changeSet>
-    <changeSet id="1.0.8" author="dmitry.luchenko" >
+    <changeSet id="1.0.7" author="dmitry.luchenko" >
         <createIndex tableName="urls_dbt" indexName="urls_targetUrl_idx">
             <column name="target_url"/>
         </createIndex>
     </changeSet>
-    <changeSet id="1.0.9" author="dmitry.luchenko">
+    <changeSet id="1.0.8" author="dmitry.luchenko">
         <createIndex tableName="urls_dbt" indexName="urls_shortName_idx">
             <column name="short_name"/>
         </createIndex>
     </changeSet>
-    <changeSet id="1.0.10" author="dmitry.luchenko">
+    <changeSet id="1.0.9" author="dmitry.luchenko">
         <createIndex tableName="users_dbt" indexName="users_login_idx">
             <column name="login"/>
         </createIndex>

@@ -10,6 +10,7 @@ import com.dsluchenko.app.url_shortener.service.UrlService;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,20 +25,20 @@ public class UrlServiceImpl implements UrlService {
     }
 
     @Override
-    public UrlDto reduceTargetUrl(String targetUrl) throws TargetUrlBlankRuntimeException {
-        targetUrl = prepareUrl(targetUrl);
-
-        var sameTargetUrl = urlRepository.findByTargetUrl(targetUrl).orElse(null);
-        if (sameTargetUrl != null) {
-            return mapper.urlToUrlDto(sameTargetUrl);
+    public UrlDto reduceTargetUrl(UrlDto urlDto) throws TargetUrlBlankRuntimeException {
+        var targetUrl = prepareUrl(urlDto.getTargetUrl());
+        if (urlDto.getUserId() != -1L) {
+            Optional<Url> byTargetUrlAndUserId = urlRepository.findByTargetUrlAndUserId(targetUrl, urlDto.getUserId());
+            if (byTargetUrlAndUserId.isPresent()) {
+                return mapper.urlToUrlDto(byTargetUrlAndUserId.get());
+            }
         }
+        Url url = mapper.urlDtoToUrl(urlDto);
+        url.setShortName(UUID.randomUUID().toString().substring(0, 7));
+        url.setCreatedAt(new Date());
+        url.setUpdatedAt(new Date());
 
-        var url = new Url(
-                targetUrl,
-                UUID.randomUUID().toString().substring(0, 7),
-                new Date(),
-                null);
-        urlRepository.save(url);
+        url = urlRepository.save(url);
 
         return mapper.urlToUrlDto(url);
     }
@@ -45,9 +46,9 @@ public class UrlServiceImpl implements UrlService {
     @Override
     public UrlDto getByShortName(String shortName) {
         var url = urlRepository.findByShortName(shortName).orElseThrow(() -> new UrlNotFoundRuntimeException(shortName));
-
         return mapper.urlToUrlDto(url);
     }
+
 
     private String prepareUrl(String url) {
         if (url.isBlank()) {
@@ -60,4 +61,6 @@ public class UrlServiceImpl implements UrlService {
         }
         return url;
     }
+
+
 }

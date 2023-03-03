@@ -13,4 +13,11 @@
             <column name="name" value="ROLE_USER"/>
         </insert>
     </changeSet>
+    <changeSet id="1.1.1" author="dmitry.luchenko">
+        <insert tableName="users_dbt">
+            <column name="id" value="1"/>
+            <column name="login" value="UNAUTHORIZED_USER"/>
+            <column name="password" value="$2a$12$fnEBRA.gSr0/4hHZj87RAOA3hGjjHHFI7bA6gvkMG73QZj3q.L5vy"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

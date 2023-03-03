@@ -11,18 +11,14 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(generator = "users_id_seq", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "users_id_seq", sequenceName = "users_id_seq", allocationSize = 50)
+    @SequenceGenerator(name = "users_id_seq", sequenceName = "users_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)
     private String login;
     @Column(nullable = false)
     private String password;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_urls_dbt",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "url_id", referencedColumnName = "id")
-    )
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Url> urls;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles_dbt",
