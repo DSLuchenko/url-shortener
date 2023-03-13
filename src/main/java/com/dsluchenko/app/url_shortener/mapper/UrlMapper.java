@@ -1,16 +1,14 @@
 package com.dsluchenko.app.url_shortener.mapper;
 
 import com.dsluchenko.app.url_shortener.dto.UrlDto;
-import com.dsluchenko.app.url_shortener.dto.UserDto;
 import com.dsluchenko.app.url_shortener.entity.Url;
 import com.dsluchenko.app.url_shortener.entity.User;
-import jakarta.persistence.EntityManager;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
+import org.mapstruct.MappingConstants;
 
-import java.util.Date;
 import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)

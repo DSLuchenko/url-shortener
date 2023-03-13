@@ -1,6 +1,5 @@
 package com.dsluchenko.app.url_shortener.repository;
 
-import com.dsluchenko.app.url_shortener.dto.UrlDto;
 import com.dsluchenko.app.url_shortener.entity.Url;
 import org.springframework.data.jpa.repository.JpaRepository;
 

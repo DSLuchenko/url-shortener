@@ -3,8 +3,6 @@ package com.dsluchenko.app.url_shortener.entity;
 import jakarta.persistence.*;
 
 import java.util.Date;
-import java.util.List;
-
 @Entity
 @Table(name = "urls_dbt", indexes = {@Index(name = "urls_targetUrl_idx", columnList = "targetUrl"),
         @Index(name = "urls_shortName_idx", columnList = "shortName")})
