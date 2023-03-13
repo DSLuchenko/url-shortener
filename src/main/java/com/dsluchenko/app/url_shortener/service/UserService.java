@@ -11,6 +11,4 @@ public interface UserService {
 
     User findByLogin(String login);
 
-    List<Url> getUserUrlsByUserId(Long userId) throws Exception;
-
 }

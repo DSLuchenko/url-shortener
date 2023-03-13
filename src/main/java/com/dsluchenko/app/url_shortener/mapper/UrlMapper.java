@@ -10,6 +10,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 
+import java.util.Date;
+import java.util.List;
+
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UrlMapper {
 
@@ -21,6 +24,8 @@ public interface UrlMapper {
     @Mapping(source = "userId", target = "user", qualifiedByName = "userById")
     Url urlDtoToUrl(UrlDto urlDto);
 
+    List<UrlDto> listUrlToListUrlDto(List<Url> urls);
+
     @Named("userById")
     default User userById(Long id) {
         var user = new User();
@@ -29,7 +34,7 @@ public interface UrlMapper {
     }
 
     @Named("idFromUser")
-    default Long userById(User user) {
+    default Long idFromUser(User user) {
         return user.getId();
     }
 

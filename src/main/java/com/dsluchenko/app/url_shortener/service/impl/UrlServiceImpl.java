@@ -10,6 +10,7 @@ import com.dsluchenko.app.url_shortener.service.UrlService;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,14 +28,16 @@ public class UrlServiceImpl implements UrlService {
     @Override
     public UrlDto reduceTargetUrl(UrlDto urlDto) throws TargetUrlBlankRuntimeException {
         var targetUrl = prepareUrl(urlDto.getTargetUrl());
-        if (urlDto.getUserId() != -1L) {
+        if (urlDto.getUserId() != 1L) {
             Optional<Url> byTargetUrlAndUserId = urlRepository.findByTargetUrlAndUserId(targetUrl, urlDto.getUserId());
             if (byTargetUrlAndUserId.isPresent()) {
                 return mapper.urlToUrlDto(byTargetUrlAndUserId.get());
             }
         }
         Url url = mapper.urlDtoToUrl(urlDto);
-        url.setShortName(UUID.randomUUID().toString().substring(0, 7));
+        if (url.getShortName() == null) {
+            url.setShortName(UUID.randomUUID().toString().substring(0, 7));
+        }
         url.setCreatedAt(new Date());
         url.setUpdatedAt(new Date());
 
@@ -49,6 +52,14 @@ public class UrlServiceImpl implements UrlService {
         return mapper.urlToUrlDto(url);
     }
 
+    @Override
+    public List<UrlDto> getUrlsByUserId(Long userId) {
+        List<Url> urls = urlRepository.findByUserId(userId).orElseThrow();
+
+        List<UrlDto> urlsDto = mapper.listUrlToListUrlDto(urls);
+
+        return urlsDto;
+    }
 
     private String prepareUrl(String url) {
         if (url.isBlank()) {
@@ -61,6 +72,4 @@ public class UrlServiceImpl implements UrlService {
         }
         return url;
     }
-
-
 }

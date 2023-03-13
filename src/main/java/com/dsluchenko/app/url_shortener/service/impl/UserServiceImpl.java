@@ -57,14 +57,4 @@ public class UserServiceImpl implements UserService {
         return foundUser;
     }
 
-    @Override
-    public List<Url> getUserUrlsByUserId(Long userId) throws Exception {
-        var foundUser = userRepository.findById(userId).orElseThrow(Exception::new);
-        List<Url> urls = foundUser.getUrls();
-        if (urls.isEmpty()) {
-            throw new Exception("user has not urls");
-        }
-
-        return urls;
-    }
 }

@@ -1,12 +1,14 @@
 package com.dsluchenko.app.url_shortener.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.URL;
 
 public class UrlDto {
     @NotBlank
     @URL
     private String targetUrl;
+    @Size(min = 7, max = 10)
     private String uri;
     private Long userId = 1L;//unauthorized_user
 
