@@ -15,7 +15,7 @@
                         dataType="BIGINT"
                         incrementBy="1"
                         minValue="1"
-                        startValue="1"/>
+                        startValue="2"/>
         <createSequence sequenceName="roles_id_seq" cacheSize="50"
                         cycle="false"
                         dataType="BIGINT"
