@@ -44,7 +44,7 @@
             <column name="target_url" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="short_name" type="VARCHAR(7)">
+            <column name="short_name" type="VARCHAR(10)">
                 <constraints uniqueConstraintName="urls_shortname_unq" nullable="false" unique="true"/>
             </column>
             <column name="created_at" type="TIMESTAMP">

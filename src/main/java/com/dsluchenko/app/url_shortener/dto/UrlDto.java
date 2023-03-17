@@ -1,5 +1,6 @@
 package com.dsluchenko.app.url_shortener.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.URL;
@@ -10,6 +11,7 @@ public class UrlDto {
     private String targetUrl;
     @Size(min = 7, max = 10)
     private String uri;
+    @JsonIgnore
     private Long userId = 1L;//unauthorized_user
 
     public UrlDto() {

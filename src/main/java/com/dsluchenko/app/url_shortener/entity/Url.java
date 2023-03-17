@@ -18,7 +18,6 @@ public class Url {
     private String shortName;
     @Column(nullable = false)
     private Date createdAt;
-    @Column(nullable = true)
     private Date updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -47,18 +47,17 @@ public class UrlServiceImpl implements UrlService {
     }
 
     @Override
-    public UrlDto getByShortName(String shortName) {
-        var url = urlRepository.findByShortName(shortName).orElseThrow(() -> new UrlNotFoundRuntimeException(shortName));
-        return mapper.urlToUrlDto(url);
+    public String getTargetUrlByShortName(String shortName) {
+
+        return urlRepository.findTargetUrlByShortName(shortName)
+                .orElseThrow(() -> new UrlNotFoundRuntimeException(shortName));
     }
 
     @Override
     public List<UrlDto> getUrlsByUserId(Long userId) {
         List<Url> urls = urlRepository.findByUserId(userId).orElseThrow();
 
-        List<UrlDto> urlsDto = mapper.listUrlToListUrlDto(urls);
-
-        return urlsDto;
+        return mapper.listUrlToListUrlDto(urls);
     }
 
     private String prepareUrl(String url) {

@@ -6,7 +6,8 @@ import java.util.List;
 
 public interface UrlService {
     UrlDto reduceTargetUrl(UrlDto urlDto);
-    UrlDto getByShortName(String shortName);
+
+    String getTargetUrlByShortName(String shortName);
 
     List<UrlDto> getUrlsByUserId(Long userId);
 

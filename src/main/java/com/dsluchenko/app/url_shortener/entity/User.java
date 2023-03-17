@@ -2,7 +2,8 @@ package com.dsluchenko.app.url_shortener.entity;
 
 import jakarta.persistence.*;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users_dbt",
@@ -19,19 +20,21 @@ public class User {
     @Column(nullable = false)
     private String password;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Url> urls;
+    private Set<Url> urls;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles_dbt",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     @Enumerated(EnumType.STRING)
-    private List<Role> roles;
+    private Set<Role> roles;
 
     public User() {
+        this.urls = new HashSet<>();
+        this.roles = new HashSet<>();
     }
 
-    public User(String login, String password, List<Url> urls, List<Role> roles) {
+    public User(String login, String password, Set<Url> urls, Set<Role> roles) {
         this.login = login;
         this.password = password;
         this.urls = urls;
@@ -62,19 +65,19 @@ public class User {
         this.password = password;
     }
 
-    public List<Url> getUrls() {
+    public Set<Url> getUrls() {
         return urls;
     }
 
-    public void setUrls(List<Url> urls) {
+    public void setUrls(Set<Url> urls) {
         this.urls = urls;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 }

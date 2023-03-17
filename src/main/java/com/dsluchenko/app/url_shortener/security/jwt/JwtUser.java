@@ -22,10 +22,6 @@ public class JwtUser implements UserDetails {
         return id;
     }
 
-    public String getLogin() {
-        return login;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

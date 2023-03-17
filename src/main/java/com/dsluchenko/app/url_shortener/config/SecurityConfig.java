@@ -12,13 +12,14 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-
     private final JwtTokenProvider jwtTokenProvider;
 
     private static final String ADMIN_ENDPOINT = "/api/admin/**";
-    private static final String USER_ENDPOINT = "/api/user";
+    private static final String USER_ENDPOINT = "/api/user/*";
     private static final String URL_ENDPOINT = "/api/url/*";
     private static final String LOGIN_ENDPOINT = "/api/auth/*";
+
+    private static final String REDIRECT_ENDPOINT = "/*";
 
     public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
@@ -36,17 +37,15 @@ public class SecurityConfig {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeHttpRequests((authorize) -> {
-                    authorize
-                            .requestMatchers(LOGIN_ENDPOINT).permitAll()
-                            .requestMatchers(URL_ENDPOINT).permitAll()
-                            .requestMatchers(USER_ENDPOINT).hasAnyRole("USER", "ADMIN")
-                            .requestMatchers(ADMIN_ENDPOINT).hasAnyRole("ADMIN")
-                            .anyRequest().authenticated();
-                }).apply(new JwtConfigurer(jwtTokenProvider));
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(REDIRECT_ENDPOINT).permitAll()
+                        .requestMatchers(LOGIN_ENDPOINT).permitAll()
+                        .requestMatchers(URL_ENDPOINT).permitAll()
+                        .requestMatchers(USER_ENDPOINT).hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(ADMIN_ENDPOINT).hasAnyRole("ADMIN")
+                        .anyRequest().authenticated())
+                .apply(new JwtConfigurer(jwtTokenProvider));
 
         return http.build();
-
     }
-
 }

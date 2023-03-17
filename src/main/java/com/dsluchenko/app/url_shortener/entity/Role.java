@@ -2,6 +2,7 @@ package com.dsluchenko.app.url_shortener.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,11 @@ public class Role {
     private List<User> users;
 
     public Role() {
+        this.users = new ArrayList<>();
+    }
+
+    public Role(String name) {
+        this.name = name;
     }
 
     public Role(String name, List<User> users) {
@@ -36,7 +42,5 @@ public class Role {
         return users;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
+
 }
