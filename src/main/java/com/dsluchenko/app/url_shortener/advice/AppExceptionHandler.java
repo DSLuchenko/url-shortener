@@ -1,9 +1,9 @@
 package com.dsluchenko.app.url_shortener.advice;
 
-import com.dsluchenko.app.url_shortener.exeption.TargetUrlBlankRuntimeException;
-import com.dsluchenko.app.url_shortener.exeption.UrlNotFoundRuntimeException;
-import com.dsluchenko.app.url_shortener.exeption.authenticationException.UserAlreadyExistAuthenticationException;
-import com.dsluchenko.app.url_shortener.exeption.authenticationException.UserNotFoundAuthenticationException;
+import com.dsluchenko.app.url_shortener.exception.TargetUrlBlankRuntimeException;
+import com.dsluchenko.app.url_shortener.exception.UrlNotFoundRuntimeException;
+import com.dsluchenko.app.url_shortener.exception.authenticationException.UserAlreadyExistAuthenticationException;
+import com.dsluchenko.app.url_shortener.exception.authenticationException.UserNotFoundAuthenticationException;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.security.core.AuthenticationException;

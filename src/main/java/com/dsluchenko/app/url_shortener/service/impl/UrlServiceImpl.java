@@ -2,10 +2,10 @@ package com.dsluchenko.app.url_shortener.service.impl;
 
 import com.dsluchenko.app.url_shortener.dto.UrlDto;
 import com.dsluchenko.app.url_shortener.entity.Url;
-import com.dsluchenko.app.url_shortener.exeption.UrlNotFoundRuntimeException;
+import com.dsluchenko.app.url_shortener.exception.UrlNotFoundRuntimeException;
 import com.dsluchenko.app.url_shortener.mapper.UrlMapper;
 import com.dsluchenko.app.url_shortener.repository.UrlRepository;
-import com.dsluchenko.app.url_shortener.exeption.TargetUrlBlankRuntimeException;
+import com.dsluchenko.app.url_shortener.exception.TargetUrlBlankRuntimeException;
 import com.dsluchenko.app.url_shortener.service.UrlService;
 import org.springframework.stereotype.Service;
 

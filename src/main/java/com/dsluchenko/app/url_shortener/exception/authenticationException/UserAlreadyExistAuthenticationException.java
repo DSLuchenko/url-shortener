@@ -1,4 +1,4 @@
-package com.dsluchenko.app.url_shortener.exeption.authenticationException;
+package com.dsluchenko.app.url_shortener.exception.authenticationException;
 
 import org.springframework.security.core.AuthenticationException;
 

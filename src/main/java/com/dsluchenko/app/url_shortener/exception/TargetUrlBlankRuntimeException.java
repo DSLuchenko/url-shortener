@@ -1,4 +1,4 @@
-package com.dsluchenko.app.url_shortener.exeption;
+package com.dsluchenko.app.url_shortener.exception;
 
 public class TargetUrlBlankRuntimeException extends RuntimeException {
 

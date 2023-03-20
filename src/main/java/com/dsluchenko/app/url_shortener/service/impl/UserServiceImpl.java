@@ -1,7 +1,7 @@
 package com.dsluchenko.app.url_shortener.service.impl;
 
 import com.dsluchenko.app.url_shortener.entity.User;
-import com.dsluchenko.app.url_shortener.exeption.authenticationException.UserNotFoundAuthenticationException;
+import com.dsluchenko.app.url_shortener.exception.authenticationException.UserNotFoundAuthenticationException;
 import com.dsluchenko.app.url_shortener.repository.UserRepository;
 import com.dsluchenko.app.url_shortener.service.UserService;
 

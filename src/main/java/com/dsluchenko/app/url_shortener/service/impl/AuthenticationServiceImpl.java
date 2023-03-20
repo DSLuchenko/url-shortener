@@ -4,7 +4,8 @@ import com.dsluchenko.app.url_shortener.dto.authentication.response.Authenticati
 import com.dsluchenko.app.url_shortener.dto.authentication.request.AuthenticationRequest;
 import com.dsluchenko.app.url_shortener.entity.Role;
 import com.dsluchenko.app.url_shortener.entity.User;
-import com.dsluchenko.app.url_shortener.exeption.authenticationException.UserAlreadyExistAuthenticationException;
+import com.dsluchenko.app.url_shortener.exception.authenticationException.UnathorizedException;
+import com.dsluchenko.app.url_shortener.exception.authenticationException.UserAlreadyExistAuthenticationException;
 
 import com.dsluchenko.app.url_shortener.mapper.AuthenticationMapper;
 import com.dsluchenko.app.url_shortener.repository.RoleRepository;
@@ -13,12 +14,16 @@ import com.dsluchenko.app.url_shortener.security.jwt.JwtTokenProvider;
 import com.dsluchenko.app.url_shortener.security.jwt.JwtUser;
 import com.dsluchenko.app.url_shortener.service.AuthenticationService;
 
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,35 +47,42 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        JwtUser jwtUser = (JwtUser) authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword())).getPrincipal();
+        try {
+            JwtUser jwtUser = (JwtUser) authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                            request.getLogin(),
+                            request.getPassword()))
+                    .getPrincipal();
+            String token = jwtTokenProvider.createToken(jwtUser.getUsername(),
+                    jwtUser.getAuthorities()
+                            .stream()
+                            .map(a -> new Role(a.getAuthority()))
+                            .collect(Collectors.toSet()));
 
-        String token = jwtTokenProvider.createToken(jwtUser.getUsername(),
-                                                    jwtUser.getAuthorities()
-                                                            .stream()
-                                                            .map(a -> new Role(a.getAuthority()))
-                                                            .collect(Collectors.toSet()));
-
-        return new AuthenticationResponse(jwtUser.getId(), jwtUser.getUsername(), token);
+            return new AuthenticationResponse(jwtUser.getId(), jwtUser.getUsername(), token);
+        } catch (AuthenticationException e) {
+            throw new UnathorizedException(e.getMessage());
+        }
     }
 
     @Override
     public AuthenticationResponse register(AuthenticationRequest request) {
-        if (userRepository.existsUserByLogin(request.getLogin())) {
+        try {
+            var roleUser = roleRepository.findByName("ROLE_USER")
+                    .orElseGet(
+                            () -> roleRepository
+                                    .save(new Role("ROLE_USER")));
+
+            User user = authenticationMapper.mapToEntity(request);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.getRoles().add(roleUser);
+            User savedUser = userRepository.save(user);
+
+            String token = jwtTokenProvider.createToken(savedUser.getLogin(), savedUser.getRoles());
+
+            return new AuthenticationResponse(savedUser.getId(), savedUser.getLogin(), token);
+        } catch (DataIntegrityViolationException ex) {
+            //System.out.println(ex.getRootCause().getMessage()); get logger!
             throw new UserAlreadyExistAuthenticationException(request.getLogin());
         }
-
-        var roleUser = roleRepository.findByName("ROLE_USER")
-                .orElseGet(
-                        () -> roleRepository
-                                .save(new Role("ROLE_USER")));
-
-        User user = authenticationMapper.mapToEntity(request);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.getRoles().add(roleUser);
-        User savedUser = userRepository.save(user);
-
-        String token = jwtTokenProvider.createToken(savedUser.getLogin(), savedUser.getRoles());
-
-        return new AuthenticationResponse(savedUser.getId(), savedUser.getLogin(), token);
     }
 }
