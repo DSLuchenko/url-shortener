@@ -7,6 +7,7 @@ import com.dsluchenko.app.url_shortener.entity.User;
 import com.dsluchenko.app.url_shortener.exception.authenticationException.UnathorizedException;
 import com.dsluchenko.app.url_shortener.exception.authenticationException.UserAlreadyExistAuthenticationException;
 
+import com.dsluchenko.app.url_shortener.exception.authenticationException.UserNotFoundAuthenticationException;
 import com.dsluchenko.app.url_shortener.mapper.AuthenticationMapper;
 import com.dsluchenko.app.url_shortener.repository.RoleRepository;
 import com.dsluchenko.app.url_shortener.repository.UserRepository;
@@ -14,7 +15,6 @@ import com.dsluchenko.app.url_shortener.security.jwt.JwtTokenProvider;
 import com.dsluchenko.app.url_shortener.security.jwt.JwtUser;
 import com.dsluchenko.app.url_shortener.service.AuthenticationService;
 
-import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +23,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,9 +48,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         try {
             JwtUser jwtUser = (JwtUser) authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                            request.getLogin(),
-                            request.getPassword()))
+                            request.login(),
+                            request.password()))
                     .getPrincipal();
+
             String token = jwtTokenProvider.createToken(jwtUser.getUsername(),
                     jwtUser.getAuthorities()
                             .stream()
@@ -60,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             return new AuthenticationResponse(jwtUser.getId(), jwtUser.getUsername(), token);
         } catch (AuthenticationException e) {
-            throw new UnathorizedException(e.getMessage());
+            throw new UnathorizedException();
         }
     }
 
@@ -72,8 +72,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                             () -> roleRepository
                                     .save(new Role("ROLE_USER")));
 
-            User user = authenticationMapper.mapToEntity(request);
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            User user = authenticationMapper.mapToEntity(request, passwordEncoder);
             user.getRoles().add(roleUser);
             User savedUser = userRepository.save(user);
 
@@ -82,7 +81,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return new AuthenticationResponse(savedUser.getId(), savedUser.getLogin(), token);
         } catch (DataIntegrityViolationException ex) {
             //System.out.println(ex.getRootCause().getMessage()); get logger!
-            throw new UserAlreadyExistAuthenticationException(request.getLogin());
+            throw new UserAlreadyExistAuthenticationException(request.login());
         }
     }
 }

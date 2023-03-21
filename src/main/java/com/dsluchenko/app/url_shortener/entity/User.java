@@ -2,7 +2,6 @@ package com.dsluchenko.app.url_shortener.entity;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -30,15 +29,6 @@ public class User {
     private Set<Role> roles;
 
     public User() {
-        this.urls = new HashSet<>();
-        this.roles = new HashSet<>();
-    }
-
-    public User(String login, String password, Set<Url> urls, Set<Role> roles) {
-        this.login = login;
-        this.password = password;
-        this.urls = urls;
-        this.roles = roles;
     }
 
     public Long getId() {

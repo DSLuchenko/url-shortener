@@ -2,6 +2,7 @@ package com.dsluchenko.app.url_shortener.advice;
 
 import com.dsluchenko.app.url_shortener.exception.TargetUrlBlankRuntimeException;
 import com.dsluchenko.app.url_shortener.exception.UrlNotFoundRuntimeException;
+import com.dsluchenko.app.url_shortener.exception.authenticationException.UnathorizedException;
 import com.dsluchenko.app.url_shortener.exception.authenticationException.UserAlreadyExistAuthenticationException;
 import com.dsluchenko.app.url_shortener.exception.authenticationException.UserNotFoundAuthenticationException;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,6 @@ public class AppExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = {NoSuchElementException.class, UrlNotFoundRuntimeException.class})
     public Map<String, String> handleNotFound(RuntimeException ex) {
-        //log
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put(ex.getClass().toString(), ex.getMessage());
         return errorMap;
@@ -32,15 +32,21 @@ public class AppExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = TargetUrlBlankRuntimeException.class)
     public Map<String, String> handleBadRequest(TargetUrlBlankRuntimeException ex) {
-        //log
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put(ex.getClass().toString(), ex.getMessage());
         return errorMap;
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler({UserAlreadyExistAuthenticationException.class, UserNotFoundAuthenticationException.class})
+    @ExceptionHandler({UserAlreadyExistAuthenticationException.class})
     public Map<String, String> handleConflict(AuthenticationException ex) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put(ex.getClass().toString(), ex.getMessage());
+        return errorMap;
+    }
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler({UnathorizedException.class})
+    public Map<String, String> handleUnauthorized(AuthenticationException ex) {
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put(ex.getClass().toString(), ex.getMessage());
         return errorMap;
@@ -56,4 +62,5 @@ public class AppExceptionHandler {
                         errorMap.put(error.getField(), error.getDefaultMessage()));
         return errorMap;
     }
+
 }
