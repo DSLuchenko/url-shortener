@@ -19,11 +19,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByLogin(String login) {
-        var foundUser = userRepository.findByLogin(login).orElse(null);
-        if (foundUser == null) {
-            throw new UserNotFoundAuthenticationException(login);
-        }
-        return foundUser;
+
+        return userRepository
+                .findByLogin(login)
+                .orElseThrow(() ->
+                        new UserNotFoundAuthenticationException(login));
     }
 
 }
