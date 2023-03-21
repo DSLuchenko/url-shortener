@@ -19,7 +19,6 @@ public class SecurityConfig {
     private static final String USER_ENDPOINT = "/api/user/*";
     private static final String URL_ENDPOINT = "/api/url/*";
     private static final String LOGIN_ENDPOINT = "/api/auth/*";
-
     private static final String REDIRECT_ENDPOINT = "/*";
 
     public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
@@ -42,9 +41,10 @@ public class SecurityConfig {
                         .requestMatchers(REDIRECT_ENDPOINT).permitAll()
                         .requestMatchers(URL_ENDPOINT).permitAll()
                         .requestMatchers(LOGIN_ENDPOINT).permitAll()
+                        .anyRequest().authenticated()
                         .requestMatchers(USER_ENDPOINT).hasAnyRole("USER", "ADMIN")
                         .requestMatchers(ADMIN_ENDPOINT).hasAnyRole("ADMIN")
-                        .anyRequest().authenticated())
+                )
                 .apply(new JwtConfigurer(jwtTokenProvider));
         return http.build();
     }
