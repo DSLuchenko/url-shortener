@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
@@ -41,9 +40,9 @@ public class SecurityConfig {
                         .requestMatchers(REDIRECT_ENDPOINT).permitAll()
                         .requestMatchers(URL_ENDPOINT).permitAll()
                         .requestMatchers(LOGIN_ENDPOINT).permitAll()
-                        .anyRequest().authenticated()
                         .requestMatchers(USER_ENDPOINT).hasAnyRole("USER", "ADMIN")
                         .requestMatchers(ADMIN_ENDPOINT).hasAnyRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .apply(new JwtConfigurer(jwtTokenProvider));
         return http.build();

@@ -1,6 +1,7 @@
 package com.dsluchenko.app.url_shortener.controller;
 
-import com.dsluchenko.app.url_shortener.dto.UrlDto;
+import com.dsluchenko.app.url_shortener.dto.request.url.UrlAuthorizedRequest;
+import com.dsluchenko.app.url_shortener.dto.response.url.UrlResponse;
 import com.dsluchenko.app.url_shortener.security.jwt.JwtUser;
 import com.dsluchenko.app.url_shortener.service.UrlService;
 
@@ -23,20 +24,15 @@ public class UserController {
     }
 
     @GetMapping("/getUrls")
-    public ResponseEntity<List<UrlDto>> getUserUrls(Authentication authentication) {
+    public ResponseEntity<List<UrlResponse>> getUserUrls(Authentication authentication) {
         JwtUser user = (JwtUser) authentication.getPrincipal();
-        List<UrlDto> urls = urlService.getUrlsByUserId(user.getId());
+        List<UrlResponse> urls = urlService.getUrlsByUserId(user.getId());
         return ResponseEntity.ok(urls);
     }
 
     @PostMapping("/reduceTargetUrl")
-    public ResponseEntity<UrlDto> reduceTargetUrl(@RequestBody @Valid UrlDto urlDto, Authentication authentication) {
-        JwtUser user = (JwtUser) authentication.getPrincipal();
-        urlDto.setUserId(user.getId());
-        var responseUrlDto = urlService.reduceTargetUrl(urlDto);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseUrlDto);
-
+    public ResponseEntity<UrlResponse> reduceTargetUrl(@RequestBody @Valid UrlAuthorizedRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(urlService.reduceTargetUrl(request));
     }
 
 }

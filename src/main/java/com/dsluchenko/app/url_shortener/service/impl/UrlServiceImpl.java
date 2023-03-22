@@ -1,18 +1,18 @@
 package com.dsluchenko.app.url_shortener.service.impl;
 
-import com.dsluchenko.app.url_shortener.dto.UrlDto;
+import com.dsluchenko.app.url_shortener.dto.request.url.UrlAuthorizedRequest;
+import com.dsluchenko.app.url_shortener.dto.request.url.UrlUnauthorizedRequest;
+import com.dsluchenko.app.url_shortener.dto.response.url.UrlResponse;
 import com.dsluchenko.app.url_shortener.entity.Url;
 import com.dsluchenko.app.url_shortener.exception.UrlNotFoundRuntimeException;
 import com.dsluchenko.app.url_shortener.mapper.UrlMapper;
 import com.dsluchenko.app.url_shortener.repository.UrlRepository;
-import com.dsluchenko.app.url_shortener.exception.TargetUrlBlankRuntimeException;
 import com.dsluchenko.app.url_shortener.service.UrlService;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UrlServiceImpl implements UrlService {
@@ -26,49 +26,40 @@ public class UrlServiceImpl implements UrlService {
     }
 
     @Override
-    public UrlDto reduceTargetUrl(UrlDto urlDto) throws TargetUrlBlankRuntimeException {
-        var targetUrl = prepareUrl(urlDto.getTargetUrl());
-        if (urlDto.getUserId() != 1L) {
-            Optional<Url> byTargetUrlAndUserId = urlRepository.findByTargetUrlAndUserId(targetUrl, urlDto.getUserId());
-            if (byTargetUrlAndUserId.isPresent()) {
-                return mapper.urlToUrlDto(byTargetUrlAndUserId.get());
-            }
-        }
-        Url url = mapper.urlDtoToUrl(urlDto);
-        if (url.getShortName() == null) {
-            url.setShortName(UUID.randomUUID().toString().substring(0, 7));
-        }
-        url.setCreatedAt(new Date());
-        url.setUpdatedAt(new Date());
+    public UrlResponse reduceTargetUrl(UrlAuthorizedRequest request) {
+        Url url = mapper.mapToEntity(request);
 
-        url = urlRepository.save(url);
+        Optional<Url> byTargetUrlAndUserId = urlRepository
+                .findByTargetUrlAndUserId(
+                        url.getTargetUrl(),
+                        url.getUser().getId());
 
-        return mapper.urlToUrlDto(url);
+        UrlResponse response = byTargetUrlAndUserId.isPresent()
+                ? mapper.mapToDto(byTargetUrlAndUserId.get())
+                : mapper.mapToDto(urlRepository.save(url));
+
+        return response;
     }
 
     @Override
-    public String getTargetUrlByShortName(String shortName) {
+    public UrlResponse reduceTargetUrl(UrlUnauthorizedRequest request) {
+        Url url = mapper.mapToEntity(request);
+        UrlResponse response = mapper.mapToDto(urlRepository.save(url));
 
+        return response;
+    }
+
+
+    @Override
+    public String getTargetUrlByShortName(String shortName) {
         return urlRepository.findTargetUrlByShortName(shortName)
                 .orElseThrow(() -> new UrlNotFoundRuntimeException(shortName));
     }
 
     @Override
-    public List<UrlDto> getUrlsByUserId(Long userId) {
-        List<Url> urls = urlRepository.findByUserId(userId).orElseThrow();
+    public List<UrlResponse> getUrlsByUserId(Long userId) {
+        List<Url> urls = urlRepository.findByUserId(userId).orElse(new ArrayList<>());
 
         return mapper.listUrlToListUrlDto(urls);
-    }
-
-    private String prepareUrl(String url) {
-        if (url.isBlank()) {
-            throw new TargetUrlBlankRuntimeException();
-        }
-        url = url.trim();
-
-        if (url.endsWith("/")) {
-            url = url.substring(0, url.length() - 1);
-        }
-        return url;
     }
 }

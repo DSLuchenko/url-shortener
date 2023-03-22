@@ -1,8 +1,9 @@
 package com.dsluchenko.app.url_shortener.controller;
 
 
-import com.dsluchenko.app.url_shortener.dto.authentication.request.AuthenticationRequest;
-import com.dsluchenko.app.url_shortener.dto.authentication.response.AuthenticationResponse;
+import com.dsluchenko.app.url_shortener.dto.request.auth.AuthenticationRequest;
+import com.dsluchenko.app.url_shortener.dto.request.auth.RegisterRequest;
+import com.dsluchenko.app.url_shortener.dto.response.auth.AuthenticationResponse;
 import com.dsluchenko.app.url_shortener.service.AuthenticationService;
 
 import jakarta.validation.Valid;
@@ -24,7 +25,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid RegisterRequest request) {
         AuthenticationResponse response = authenticationService.register(request);
         return ResponseEntity.ok(response);
     }

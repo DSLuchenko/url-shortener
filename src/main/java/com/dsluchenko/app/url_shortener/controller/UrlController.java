@@ -1,9 +1,9 @@
 package com.dsluchenko.app.url_shortener.controller;
 
-import com.dsluchenko.app.url_shortener.dto.UrlDto;
+import com.dsluchenko.app.url_shortener.dto.request.url.UrlUnauthorizedRequest;
+import com.dsluchenko.app.url_shortener.dto.response.url.UrlResponse;
 import com.dsluchenko.app.url_shortener.service.UrlService;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +20,7 @@ public class UrlController {
     }
 
     @PostMapping(value = "/reduceUrl")
-    public ResponseEntity<UrlDto> reduceTargetUrl(@RequestBody @Valid UrlDto urlDto, HttpServletRequest request) {
-        var responseUrlDto = urlService.reduceTargetUrl(urlDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseUrlDto);
+    public ResponseEntity<UrlResponse> reduceTargetUrl(@RequestBody @Valid UrlUnauthorizedRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(urlService.reduceTargetUrl(request));
     }
 }

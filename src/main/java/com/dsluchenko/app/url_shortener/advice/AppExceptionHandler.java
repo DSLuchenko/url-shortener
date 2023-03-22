@@ -1,10 +1,8 @@
 package com.dsluchenko.app.url_shortener.advice;
 
-import com.dsluchenko.app.url_shortener.exception.TargetUrlBlankRuntimeException;
 import com.dsluchenko.app.url_shortener.exception.UrlNotFoundRuntimeException;
 import com.dsluchenko.app.url_shortener.exception.authenticationException.UnathorizedException;
 import com.dsluchenko.app.url_shortener.exception.authenticationException.UserAlreadyExistAuthenticationException;
-import com.dsluchenko.app.url_shortener.exception.authenticationException.UserNotFoundAuthenticationException;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.security.core.AuthenticationException;
@@ -29,14 +27,6 @@ public class AppExceptionHandler {
         return errorMap;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = TargetUrlBlankRuntimeException.class)
-    public Map<String, String> handleBadRequest(TargetUrlBlankRuntimeException ex) {
-        Map<String, String> errorMap = new HashMap<>();
-        errorMap.put(ex.getClass().toString(), ex.getMessage());
-        return errorMap;
-    }
-
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler({UserAlreadyExistAuthenticationException.class})
     public Map<String, String> handleConflict(AuthenticationException ex) {
@@ -44,6 +34,7 @@ public class AppExceptionHandler {
         errorMap.put(ex.getClass().toString(), ex.getMessage());
         return errorMap;
     }
+
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler({UnathorizedException.class})
     public Map<String, String> handleUnauthorized(AuthenticationException ex) {

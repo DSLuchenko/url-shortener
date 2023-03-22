@@ -1,7 +1,8 @@
 package com.dsluchenko.app.url_shortener.service.impl;
 
-import com.dsluchenko.app.url_shortener.dto.authentication.response.AuthenticationResponse;
-import com.dsluchenko.app.url_shortener.dto.authentication.request.AuthenticationRequest;
+import com.dsluchenko.app.url_shortener.dto.request.auth.RegisterRequest;
+import com.dsluchenko.app.url_shortener.dto.response.auth.AuthenticationResponse;
+import com.dsluchenko.app.url_shortener.dto.request.auth.AuthenticationRequest;
 import com.dsluchenko.app.url_shortener.entity.Role;
 import com.dsluchenko.app.url_shortener.entity.User;
 import com.dsluchenko.app.url_shortener.exception.authenticationException.UnathorizedException;
@@ -67,7 +68,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponse register(AuthenticationRequest request) {
+    public AuthenticationResponse register(RegisterRequest request) {
         try {
             var roleUser = roleService.getRoleByName(RoleServiceImpl.RoleName.ROLE_USER);
 
