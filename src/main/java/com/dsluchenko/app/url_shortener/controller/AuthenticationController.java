@@ -7,6 +7,7 @@ import com.dsluchenko.app.url_shortener.dto.response.auth.AuthenticationResponse
 import com.dsluchenko.app.url_shortener.service.AuthenticationService;
 
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-    @PostMapping("/register")
+    @PostMapping( "/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody @Valid RegisterRequest request) {
         AuthenticationResponse response = authenticationService.register(request);
         return ResponseEntity.ok(response);
